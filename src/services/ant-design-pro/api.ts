@@ -3,12 +3,11 @@
 import { request } from '@umijs/max';
 
 /** 获取当前的用户 GET /api/v1/admin/user/info */
-export async function currentUser(options?: { [key: string]: any }) {
+export async function currentUser() {
   return request<{
     data: User.ResUserInfo;
   }>('/api/v1/admin/user/info', {
     method: 'GET',
-    ...(options || {}),
   });
 }
 

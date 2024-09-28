@@ -62,6 +62,7 @@ const Login: React.FC = () => {
   const intl = useIntl();
 
   const fetchUserInfo = async () => {
+    // 获取用户信息
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
       flushSync(() => {
@@ -78,12 +79,16 @@ const Login: React.FC = () => {
       // 登录
       const msg = await login({ ...values });
       if (msg.code === 0) {
+        // 存储 token
+        localStorage.setItem('Authorization', msg.data.token);
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
           defaultMessage: '登录成功！',
         });
         message.success(defaultLoginSuccessMessage);
-        // await fetchUserInfo();
+        // 获取用户信息
+        await fetchUserInfo();
+        // 用户登录成功后的跳转页面
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
         return;
