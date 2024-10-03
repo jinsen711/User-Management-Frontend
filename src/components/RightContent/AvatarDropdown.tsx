@@ -1,4 +1,4 @@
-import { outLogin } from '@/services/ant-design-pro/api';
+// import { outLogin } from '@/services/ant-design-pro/api';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { history, useModel } from '@umijs/max';
 import { Spin } from 'antd';
@@ -17,7 +17,7 @@ export type GlobalHeaderRightProps = {
 export const AvatarName = () => {
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
-  return <span className="anticon">{currentUser?.name}</span>;
+  return <span className="anticon">{currentUser?.username}</span>;
 };
 
 const useStyles = createStyles(({ token }) => {
@@ -43,8 +43,13 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
    * 退出登录，并且将当前的 url 保存
    */
   const loginOut = async () => {
-    await outLogin();
+    // await outLogin();
+
+    // 移除 token
+    localStorage.removeItem('Authorization');
+
     const { search, pathname } = window.location;
+    // 获取 redirect 参数
     const urlParams = new URL(window.location.href).searchParams;
     /** 此方法会跳转到 redirect 参数所在的位置 */
     const redirect = urlParams.get('redirect');
@@ -52,6 +57,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
     if (window.location.pathname !== '/user/login' && !redirect) {
       history.replace({
         pathname: '/user/login',
+        // 构建查询参数, 用于在登录成功后返回原页面
         search: stringify({
           redirect: pathname + search,
         }),
@@ -95,7 +101,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
 
   const { currentUser } = initialState;
 
-  if (!currentUser || !currentUser.name) {
+  if (!currentUser || !currentUser.username) {
     return loading;
   }
 

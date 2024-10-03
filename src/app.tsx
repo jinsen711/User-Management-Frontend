@@ -47,18 +47,23 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
-    actionsRender: () => [<Question key="doc" />, <SelectLang key="SelectLang" />],
+    // 头像左边的问号按钮
+    // actionsRender: () => [<Question key="doc" />, <SelectLang key="SelectLang" />],
+    // 头像
     avatarProps: {
-      src: initialState?.currentUser?.header_img,
+      src: 'https://s1.imagehub.cc/images/2024/10/03/2f80b06ca4a63f5ba37d8bd470368192.jpg',
       title: <AvatarName />,
       render: (_, avatarChildren) => {
         return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
       },
     },
+    // 水印
     waterMarkProps: {
       content: initialState?.currentUser?.username,
     },
-    footerRender: () => <Footer />,
+    // 删除默认的 logo
+    // footerRender: () => <Footer />,
+
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login

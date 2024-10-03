@@ -15,9 +15,9 @@ const Settings: ProLayoutProps & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'Ant Design Pro',
+  title: '用户管理系统',
   pwa: true,
-  logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+  logo: 'https://s1.imagehub.cc/images/2024/10/04/daabe408df7089cb70d779bd1c3678d5.jpg',
   iconfontUrl: '',
   token: {
     // 参见ts声明，demo 见文档，通过token 修改样式

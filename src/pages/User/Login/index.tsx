@@ -9,6 +9,27 @@ import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import Settings from '../../../../config/defaultSettings';
 
+/**
+ * @description 用户登录
+ * @author jin
+ * @date 04/10/2024
+ * @param {User.LoginInfo} loginInfo
+ * @return {*}  {Promise<User.ResLogin>}
+ */
+const handleUserLogin = async (loginInfo: User.LoginInfo): Promise<User.ResLogin> => {
+  const hide = message.loading('正在登录, 请稍后...');
+  try {
+    const result = await login({ ...loginInfo });
+    hide();
+    message.success('登录成功');
+    return result;
+  } catch (error: any) {
+    hide();
+    message.error(error.message);
+    return { data: { token: undefined } };
+  }
+};
+
 const useStyles = createStyles(({ token }) => {
   return {
     action: {
@@ -56,7 +77,6 @@ const Lang = () => {
 };
 
 const Login: React.FC = () => {
-  const [userLoginState, setUserLoginState] = useState<User.ResLogin>({});
   const { initialState, setInitialState } = useModel('@@initialState');
   const { styles } = useStyles();
   const intl = useIntl();
@@ -74,35 +94,26 @@ const Login: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (values: User.LoginParams) => {
+  const handleSubmit = async (loginInfo: User.LoginInfo) => {
     try {
       // 登录
-      const msg = await login({ ...values });
-      if (msg.code === 0) {
+      const result = await handleUserLogin(loginInfo);
+      if (result.data.token !== undefined) {
         // 存储 token
-        localStorage.setItem('Authorization', msg.data.token);
-        const defaultLoginSuccessMessage = intl.formatMessage({
-          id: 'pages.login.success',
-          defaultMessage: '登录成功！',
-        });
-        message.success(defaultLoginSuccessMessage);
+        localStorage.setItem('Authorization', result.data.token);
         // 获取用户信息
         await fetchUserInfo();
-        // 用户登录成功后的跳转页面
+        // 用户登录成功后的跳转页面, 用于重定义原来退出重新登录的页面
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
-        return;
       }
-      console.log(msg);
-      // 如果失败去设置用户错误信息
-      setUserLoginState(msg);
-    } catch (error) {
-      const defaultLoginFailureMessage = intl.formatMessage({
-        id: 'pages.login.failure',
-        defaultMessage: '登录失败，请重试！',
-      });
+
+      return;
+    } catch (error: any) {
       console.log(error);
-      message.error(defaultLoginFailureMessage);
+      message.error(error.message);
+
+      return;
     }
   };
   // const { code } = userLoginState;
