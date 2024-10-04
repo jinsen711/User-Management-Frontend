@@ -1,150 +1,32 @@
-import { addRule, removeRule, rule, updateRule } from '@/services/ant-design-pro/api';
-import { userList, userUpdate } from '@/services/Login/api';
+import React, { useRef, useState, useEffect } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
-import {
-  FooterToolbar,
-  ModalForm,
-  PageContainer,
-  ProDescriptions,
-  ProFormText,
-  ProFormTextArea,
-  ProTable,
-} from '@ant-design/pro-components';
-import { FormattedMessage, useIntl, useParams } from '@umijs/max';
-import { Button, Drawer, Input, message, Avatar, Popconfirm } from 'antd';
-import React, { useRef, useState } from 'react';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import { PageContainer, ProTable } from '@ant-design/pro-components';
+import { Button, Avatar, Popconfirm } from 'antd';
 import moment from 'moment';
-import type { FormValueType } from './components/UpdateForm';
-import UpdateForm from './components/UpdateForm';
-import AddUserForm from './components/CreateUserForm';
 
-/**
- * @description 获取用户列表
- * @author jin
- * @date 04/10/2024
- * @param {User.GetUserListQuery} listQuery
- * @return {*} Promise<User.ResGetUserList>
- */
-const handleUserList = async (listQuery: User.GetUserListQuery): Promise<User.ResGetUserList> => {
-  const hide = message.loading('正在获取用户列表');
-  try {
-    const result = await userList(listQuery);
-    hide();
-    return result;
-  } catch (error: any) {
-    hide();
-    message.error(error.message);
-    return {} as User.ResGetUserList;
-  }
-};
-
-/**
- * @description 更新用户信息
- * @author jin
- * @date 04/10/2024
- * @param {User.UserUpdate} updateInfo
- * @return {*}  {Promise<boolean>}
- */
-const handleUserUpdate = async (updateInfo: User.UserUpdate): Promise<boolean> => {
-  const hide = message.loading('正在更新信息');
-  try {
-    await userUpdate(updateInfo);
-    hide();
-    message.success('更新成功');
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error(error.message);
-    return false;
-  }
-};
-
-/**
- * @description 修改用户状态
- * @author jin
- * @date 04/10/2024
- * @param {User.UserUpdate} updateInfo
- * @return {*} {Promise<boolean>}
- */
-const changeUserStatus = async (updateInfo: User.UserUpdate): Promise<boolean> => {
-  // 修改用户状态
-  updateInfo.user_status = !updateInfo.user_status;
-  // 更新用户信息
-  return await handleUserUpdate(updateInfo);
-};
-
-/**
- * @en-US Update node
- * @zh-CN 更新节点
- *
- * @param fields
- */
-const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('Configuring');
-  try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
-    hide();
-
-    message.success('Configuration is successful');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('Configuration failed, please try again!');
-    return false;
-  }
-};
-
-/**
- *  Delete node
- * @zh-CN 删除节点
- *
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: API.RuleListItem[]) => {
-  const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-  try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    });
-    hide();
-    message.success('Deleted successfully and will refresh soon');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('Delete failed, please try again');
-    return false;
-  }
-};
+import CreateUserForm from './components/CreateUserForm';
+import UpdateUserForm from './components/UpdateUserForm';
+import { handleUserList, handleUserDelete, handleUserUpdateStatus } from './services/api';
 
 const TableList: React.FC = () => {
-  /**
-   * @en-US Pop-up window of new window
-   * @zh-CN 新建窗口的弹窗
-   *  */
-  const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-  /**
-   * @en-US The pop-up window of the distribution update window
-   * @zh-CN 分布更新窗口的弹窗
-   * */
-  const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
+  // 添加用户弹窗
+  const [userCreateOpen, setUserCreateOpen] = useState<boolean>(false);
+  // 更新用户弹窗
+  const [userUpdateOpen, setUserUpdateOpen] = useState<boolean>(false);
+  // 角色管理弹窗
+  const [roleOpen, setRoleOpen] = useState<boolean>(false);
+  // 更新用户基础信息
+  const [userBasicInfo, setUserBasicInfo] = useState<User.UserItem>();
 
-  const [showDetail, setShowDetail] = useState<boolean>(false);
+  // 用户基础信息改变时弹出更新用户弹窗
+  useEffect(() => {
+    if (userBasicInfo) {
+      setUserUpdateOpen(true);
+    }
+  }, [userBasicInfo]);
 
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<User.UserItem>();
-  const [selectedRowsState, setSelectedRows] = useState<User.UserItem[]>([]);
-
-  /**
-   * @en-US International configuration
-   * @zh-CN 国际化配置
-   * */
-  const intl = useIntl();
 
   // 表格列
   const columns: ProColumns<User.UserItem>[] = [
@@ -227,29 +109,28 @@ const TableList: React.FC = () => {
       title: '操作',
       valueType: 'option',
       width: 200,
-      render: (_dom, d) => {
+      render: (_dom, userItem: User.UserItem) => {
         return [
           <Button
             key={'disable'}
-            type={d.user_status ? 'dashed' : 'primary'}
-            danger={d.user_status}
+            type={userItem.user_status ? 'dashed' : 'primary'}
+            danger={userItem.user_status}
             onClick={async () => {
               // 更新状态
-              await changeUserStatus({ ...d });
+              await handleUserUpdateStatus({ ...userItem, user_status: !userItem.user_status });
               // 刷新列表
               if (actionRef.current) {
                 actionRef.current.reload();
               }
             }}
           >
-            {d.user_status ? '禁用' : '启用'}
+            {userItem.user_status ? '禁用' : '启用'}
           </Button>,
           <Button
             key={'setrole'}
             type={'dashed'}
             onClick={() => {
-              setUserData(d);
-              setroleVisible(true);
+              setUserItem(userItem);
             }}
           >
             角色
@@ -259,16 +140,22 @@ const TableList: React.FC = () => {
             ghost
             type="primary"
             onClick={() => {
-              setUserData(d);
-              setEditVisible(true);
+              console.log(userItem);
+              setUserBasicInfo({ ...userItem });
             }}
           >
             编辑
           </Button>,
           <Popconfirm
             key={'delete'}
-            title="😫删除不可逆，谨慎操作！"
-            onConfirm={() => deletUser(d)}
+            title="删除不可逆，谨慎操作！"
+            onConfirm={async () => {
+              await handleUserDelete({ ...userItem });
+              // 刷新列表
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }}
             placement="leftTop"
           >
             <Button danger>删除</Button>
@@ -282,7 +169,7 @@ const TableList: React.FC = () => {
     <PageContainer>
       {/* 数据表格 */}
       <ProTable
-        headerTitle="所有用户"
+        headerTitle="用户列表"
         actionRef={actionRef}
         rowKey="key"
         search={{
@@ -293,7 +180,7 @@ const TableList: React.FC = () => {
             type="primary"
             key="primary"
             onClick={() => {
-              handleModalOpen(true);
+              setUserCreateOpen(true);
             }}
           >
             <PlusOutlined />
@@ -302,11 +189,6 @@ const TableList: React.FC = () => {
         ]}
         request={async (params) => handleUserList({ ...params })} // 获取数据
         columns={columns} // 表格列配置
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
         pagination={{
           defaultPageSize: 10, // 默认每页条数
           pageSizeOptions: ['5', '10', '20', '30', '50'], // 可选择的每页条数
@@ -314,97 +196,19 @@ const TableList: React.FC = () => {
         }}
       />
 
-      {/* 批量删除功能 */}
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              <FormattedMessage id="pages.searchTable.chosen" defaultMessage="Chosen" />{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id="pages.searchTable.item" defaultMessage="项" />
-              &nbsp;&nbsp;
-              <span>
-                <FormattedMessage
-                  id="pages.searchTable.totalServiceCalls"
-                  defaultMessage="Total number of service calls"
-                />{' '}
-                <FormattedMessage id="pages.searchTable.tenThousand" defaultMessage="万" />
-              </span>
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            <FormattedMessage
-              id="pages.searchTable.batchDeletion"
-              defaultMessage="Batch deletion"
-            />
-          </Button>
-          <Button type="primary">
-            <FormattedMessage
-              id="pages.searchTable.batchApproval"
-              defaultMessage="Batch approval"
-            />
-          </Button>
-        </FooterToolbar>
-      )}
-
       {/* 创建新用户弹窗 */}
-      <AddUserForm
+      <CreateUserForm
         actionRef={actionRef.current}
-        visible={createModalOpen}
-        setVisible={handleModalOpen}
+        visible={userCreateOpen}
+        setVisible={setUserCreateOpen}
       />
-
-      <UpdateForm
-        onSubmit={async (value) => {
-          const success = await handleUpdate(value);
-          if (success) {
-            handleUpdateModalOpen(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={() => {
-          handleUpdateModalOpen(false);
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
-        }}
-        updateModalOpen={updateModalOpen}
-        values={currentRow || {}}
+      {/* 更新用户弹窗 */}
+      <UpdateUserForm
+        actionRef={actionRef.current}
+        visible={userUpdateOpen}
+        setVisible={setUserUpdateOpen}
+        userItem={userBasicInfo}
       />
-
-      <Drawer
-        width={600}
-        open={showDetail}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
-        closable={false}
-      >
-        {currentRow?.username && (
-          <ProDescriptions<API.RuleListItem>
-            column={2}
-            title={currentRow?.username}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.username,
-            }}
-            columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
-          />
-        )}
-      </Drawer>
     </PageContainer>
   );
 };

@@ -38,9 +38,15 @@ export default [
     routes: [
       {
         name: '用户管理',
-        path: '/admin/index',
+        path: '/admin/user',
         access: 'canAdmin',
         component: './User/User',
+      },
+      {
+        name: '角色管理',
+        path: '/admin/role',
+        access: 'canAdmin',
+        component: './User/Role',
       },
     ],
   },

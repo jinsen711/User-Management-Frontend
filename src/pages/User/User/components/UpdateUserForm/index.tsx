@@ -1,47 +1,53 @@
+import { PlusOutlined } from '@ant-design/icons';
 import { memo } from 'react';
-import {
-  ActionType,
-  ModalForm,
-  ProFormText,
-  ProFormSwitch,
-  ProFormTextArea,
-} from '@ant-design/pro-components';
+import { ActionType, DrawerForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
+import { Button, Form } from 'antd';
 
-import { handleUserCreate } from '../../services/api';
+import { handleUserUpdateBasic } from '../../services/api';
 
 interface IProps {
   actionRef?: ActionType;
   visible: boolean;
   setVisible: (e: boolean) => void;
+  userItem?: User.UserItem;
 }
 
-const CreateUserForm: React.FC<IProps> = ({ actionRef, visible, setVisible }) => {
+const UpdateUserForm: React.FC<IProps> = ({ actionRef, visible, setVisible, userItem }: IProps) => {
+  const [form] = Form.useForm<User.UserUpdateBasic>();
+
   return (
-    <ModalForm
-      title={'创建新用户'}
-      width="600px"
+    <DrawerForm<User.UserUpdateBasic>
+      title={'编辑用户'}
+      open={visible}
+      width="400px"
       submitter={{
         searchConfig: {
-          submitText: '创建',
+          submitText: '更新',
         },
       }}
-      open={visible}
-      onOpenChange={setVisible}
-      onFinish={async (values) => {
-        const success = await handleUserCreate(values as User.UserCreate);
+      form={form}
+      initialValues={userItem}
+      onFinish={async (values: User.UserUpdateBasic) => {
+        const success = await handleUserUpdateBasic(values);
         if (success) {
-          setVisible(false); // 关闭弹窗
+          // 关闭弹窗
+          setVisible(false);
           // 刷新列表
           if (actionRef) {
             actionRef.reload();
           }
         }
       }}
-      modalProps={{
-        maskClosable: true, // 点击蒙层关闭弹窗
-        destroyOnClose: true, // 关闭时销毁 Modal 元素
+      drawerProps={{
+        destroyOnClose: true, // 点击蒙层关闭弹窗
+        mask: true, // 关闭时销毁 Modal 元素
+        onClose: () => {
+          setVisible(false);
+        },
       }}
     >
+      <ProFormText name={'id'} label={'用户ID'} hidden={true} readonly />
+
       <ProFormText
         name={'username'}
         label={'用户名'}
@@ -58,25 +64,6 @@ const CreateUserForm: React.FC<IProps> = ({ actionRef, visible, setVisible }) =>
           {
             max: 10,
             message: '用户名3-10个字符!',
-          },
-        ]}
-      />
-      <ProFormText.Password
-        name={'password'}
-        label={'密码'}
-        placeholder={'密码长度6-12位'}
-        rules={[
-          {
-            required: true,
-            message: '请输入密码！',
-          },
-          {
-            min: 6,
-            message: '密码长度6-12位',
-          },
-          {
-            max: 12,
-            message: '密码长度6-12位',
           },
         ]}
       />
@@ -97,22 +84,14 @@ const CreateUserForm: React.FC<IProps> = ({ actionRef, visible, setVisible }) =>
         ]}
       />
 
-      <ProFormSwitch
-        label={'用户状态'}
-        tooltip={'默认禁用'}
-        name={'user_status'}
-        initialValue={false}
-      />
-
       <ProFormTextArea
         label="备注"
         name="remarks"
         fieldProps={{ maxLength: 30, showCount: true }}
         rules={[{ max: 30, message: '备注长度输入30个字符以内' }]}
       />
-    </ModalForm>
+    </DrawerForm>
   );
 };
 
-// 使用 memo 优化性能, 并导出
-export default memo(CreateUserForm);
+export default memo(UpdateUserForm);

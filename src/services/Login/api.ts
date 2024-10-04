@@ -42,11 +42,56 @@ export async function userCreate(body: User.UserCreate, options?: { [key: string
   });
 }
 
-/** 用户更新 PUT /api/v1/admin/user */
-export async function userUpdate(body: User.UserUpdate, options?: { [key: string]: any }) {
+/** 用户基础信息更新 PUT /api/v1/admin/user */
+export async function userUpdateBasic(
+  body: User.UserUpdateBasic,
+  options?: { [key: string]: any },
+) {
   return request<Base.ResBase>('/api/v1/admin/user', {
     method: 'PUT',
     data: body,
+    ...(options || {}),
+  });
+}
+
+/** 用户密码更新 PUT /api/v1/admin/user/password */
+export async function userUpdatePassword(
+  body: User.UserUpdatePassword,
+  options?: { [key: string]: any },
+) {
+  return request<Base.ResBase>('/api/v1/admin/user/password', {
+    method: 'PUT',
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** 用户状态更新 PUT /api/v1/admin/user/status */
+export async function userUpdateStatus(
+  body: User.UserUpdateStatus,
+  options?: { [key: string]: any },
+) {
+  return request<Base.ResBase>('/api/v1/admin/user/status', {
+    method: 'PUT',
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** 用户删除 DELETE /api/v1/admin/user */
+export async function userDelete(params: User.UserDelete, options?: { [key: string]: any }) {
+  return request<Base.ResBase>('/api/v1/admin/user', {
+    method: 'DELETE',
+    params: params,
+    ...(options || {}),
+  });
+}
+
+/** 获取指定用户角色信息 GET /api/v1/admin/user/role */
+export async function getUserRoles(params: User.GetUserRoles, options?: { [key: string]: any }) {
+  return request<User.ResUserRoles>('/api/v1/admin/user/role', {
+    method: 'GET',
+    params: params,
     ...(options || {}),
   });
 }

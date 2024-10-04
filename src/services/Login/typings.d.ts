@@ -19,7 +19,6 @@ declare namespace User {
     username: string;
     user_type: boolean; // true:管理员 false:普通用户
     user_status: boolean;
-    age?: number;
     nickname?: string;
     user_phone?: string;
     user_email?: string;
@@ -34,9 +33,11 @@ declare namespace User {
     id: number;
     username?: string;
     user_type: boolean; // true:管理员 false:普通用户
+    nickname?: string;
     user_phone?: string;
     user_email?: string;
     user_status: boolean;
+    full_name?: string;
     header_img?: string;
     sex?: number;
     remarks?: string;
@@ -54,15 +55,27 @@ declare namespace User {
     roles?: number[];
   };
 
-  type UserUpdate = {
+  type UserUpdateBasic = {
     id: number;
     username?: string;
-    password?: string;
     user_phone?: string;
     user_email?: string;
-    user_status: boolean;
     remarks?: string;
-    roles?: number[];
+  };
+
+  type UserUpdatePassword = {
+    id: number;
+    old_password: string;
+    new_password: string;
+  };
+
+  type UserUpdateStatus = {
+    id: number;
+    user_status: boolean;
+  };
+
+  type UserDelete = {
+    id: number;
   };
 
   export interface ResLogin extends Base.ResBase {
@@ -82,5 +95,18 @@ declare namespace User {
 
   export interface ResGetUserList extends Base.ResTableQueryBase {
     data?: UserItem[];
+  }
+
+  type GetUserRoles = {
+    id: number;
+  };
+
+  type UserRoles = {
+    all_roles: [{ label: string; value: number }];
+    user_roles: number[];
+  };
+
+  export interface ResUserRoles extends Base.ResBase {
+    data?: UserRoles;
   }
 }
