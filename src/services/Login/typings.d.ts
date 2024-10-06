@@ -91,6 +91,7 @@ declare namespace User {
     user_phone?: string; // 手机号
     user_email?: string; // 邮箱
     user_status?: boolean; // 账号状态
+    create_time?: string; // 创建时间
   }
 
   export interface ResGetUserList extends Base.ResTableQueryBase {
@@ -106,7 +107,12 @@ declare namespace User {
     user_roles: number[];
   };
 
+  type SetUserRoles = {
+    id: number;
+    roles_id: number[];
+  };
+
   export interface ResUserRoles extends Base.ResBase {
-    data?: UserRoles;
+    data: UserRoles;
   }
 }

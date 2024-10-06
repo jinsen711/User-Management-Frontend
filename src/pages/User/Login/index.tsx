@@ -5,7 +5,7 @@ import { LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-compone
 import { FormattedMessage, Helmet, history, SelectLang, useIntl, useModel } from '@umijs/max';
 import { message } from 'antd';
 import { createStyles } from 'antd-style';
-import React, { useState } from 'react';
+import React from 'react';
 import { flushSync } from 'react-dom';
 import Settings from '../../../../config/defaultSettings';
 

@@ -32,29 +32,23 @@ export default [
   },
   {
     path: '/admin',
-    name: '用户中心',
+    name: 'list.user-management',
     icon: 'user',
     access: 'canAdmin',
     routes: [
       {
-        name: '用户管理',
+        name: 'user',
         path: '/admin/user',
         access: 'canAdmin',
         component: './User/User',
       },
       {
-        name: '角色管理',
+        name: 'role',
         path: '/admin/role',
         access: 'canAdmin',
         component: './User/Role',
       },
     ],
-  },
-  {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
   },
   {
     path: '/',

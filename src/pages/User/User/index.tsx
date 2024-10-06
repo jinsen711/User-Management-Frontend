@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
@@ -7,6 +7,7 @@ import moment from 'moment';
 
 import CreateUserForm from './components/CreateUserForm';
 import UpdateUserForm from './components/UpdateUserForm';
+import SetRole from './components/SetRole';
 import { handleUserList, handleUserDelete, handleUserUpdateStatus } from './services/api';
 
 const TableList: React.FC = () => {
@@ -17,14 +18,9 @@ const TableList: React.FC = () => {
   // 角色管理弹窗
   const [roleOpen, setRoleOpen] = useState<boolean>(false);
   // 更新用户基础信息
-  const [userBasicInfo, setUserBasicInfo] = useState<User.UserItem>();
-
-  // 用户基础信息改变时弹出更新用户弹窗
-  useEffect(() => {
-    if (userBasicInfo) {
-      setUserUpdateOpen(true);
-    }
-  }, [userBasicInfo]);
+  const [userUpdateBasicInfo, setUserBasicInfo] = useState<User.UserUpdateBasic>({ id: 0 });
+  // 设置角色信息
+  const [getUserRolesInfo, setGetUserRolesInfo] = useState<User.GetUserRoles>({ id: 0 });
 
   const actionRef = useRef<ActionType>();
 
@@ -74,8 +70,7 @@ const TableList: React.FC = () => {
       dataIndex: 'create_time',
       valueType: 'dateTimeRange',
       fieldProps: {
-        // defaultValue:[moment().subtract(1, 'days').startOf('day'), moment()],
-        ranges: {
+        presets: {
           今天: [moment().startOf('day'), moment().endOf('day')],
           昨天: [
             moment().subtract(1, 'days').startOf('day'),
@@ -109,7 +104,7 @@ const TableList: React.FC = () => {
       title: '操作',
       valueType: 'option',
       width: 200,
-      render: (_dom, userItem: User.UserItem) => {
+      render: (dom, userItem: User.UserItem) => {
         return [
           <Button
             key={'disable'}
@@ -126,22 +121,33 @@ const TableList: React.FC = () => {
           >
             {userItem.user_status ? '禁用' : '启用'}
           </Button>,
+
           <Button
             key={'setrole'}
             type={'dashed'}
             onClick={() => {
-              setUserItem(userItem);
+              setGetUserRolesInfo({ id: userItem.id });
+              // 打开角色管理弹窗
+              setRoleOpen(true);
             }}
           >
             角色
           </Button>,
+
           <Button
             key={'edit'}
             ghost
             type="primary"
             onClick={() => {
-              console.log(userItem);
-              setUserBasicInfo({ ...userItem });
+              setUserBasicInfo({
+                id: userItem.id,
+                username: userItem.username,
+                user_phone: userItem.user_phone,
+                user_email: userItem.user_email,
+                remarks: userItem.remarks,
+              });
+              // 打开更新用户弹窗
+              setUserUpdateOpen(true);
             }}
           >
             编辑
@@ -207,8 +213,10 @@ const TableList: React.FC = () => {
         actionRef={actionRef.current}
         visible={userUpdateOpen}
         setVisible={setUserUpdateOpen}
-        userItem={userBasicInfo}
+        userUpdateBasicInfo={userUpdateBasicInfo}
       />
+      {/* 角色管理弹窗 */}
+      <SetRole visible={roleOpen} setVisible={setRoleOpen} getUserRolesInfo={getUserRolesInfo} />
     </PageContainer>
   );
 };

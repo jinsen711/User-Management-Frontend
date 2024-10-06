@@ -1,21 +1,22 @@
 import { memo, useState, useRef } from 'react';
+import { ActionType } from '@ant-design/pro-components';
 import { ModalForm, ProFormCheckbox, FormInstance } from '@ant-design/pro-components';
 
-import { handleGetUserRoles, handleSetUserRoles } from '../../services/api';
+import { handleGetRoleAccess, handleSetRoleAccess } from '../../services/api';
 
 interface IProps {
   visible: boolean;
   setVisible: (e: boolean) => void;
-  getUserRolesInfo: User.GetUserRoles;
+  getRoleAccessInfo: Role.GetRoleAccess;
 }
 
-const SetRole: React.FC<IProps> = ({ visible, setVisible, getUserRolesInfo }) => {
+const SetRole: React.FC<IProps> = ({ visible, setVisible, getRoleAccessInfo }) => {
   const formRef = useRef<FormInstance>();
   const [submit, setsubmit] = useState(true);
 
   return (
     <ModalForm
-      title={'角色分配'}
+      title={'权限分配'}
       open={visible}
       width="400px"
       submitter={{
@@ -24,9 +25,10 @@ const SetRole: React.FC<IProps> = ({ visible, setVisible, getUserRolesInfo }) =>
       }}
       formRef={formRef}
       onFinish={async (values) => {
-        const success = await handleSetUserRoles({
-          ...getUserRolesInfo,
-          roles_id: values.roles,
+        console.log(values);
+        const success = await handleSetRoleAccess({
+          ...getRoleAccessInfo,
+          access_id: values.access,
         });
         if (success) {
           // 关闭弹窗
@@ -40,17 +42,18 @@ const SetRole: React.FC<IProps> = ({ visible, setVisible, getUserRolesInfo }) =>
       }}
     >
       <ProFormCheckbox.Group
-        name={'roles'}
+        name={'access'}
         layout={'vertical'}
         request={async () => {
-          const result = await handleGetUserRoles(getUserRolesInfo);
+          const result = await handleGetRoleAccess(getRoleAccessInfo);
+          console.log(result);
           // 判断 result 是否存在
           if (Object.keys(result).length) {
-            formRef.current?.setFieldsValue({ roles: result.data.user_roles });
-            if (result.data.all_roles.length) {
+            formRef.current?.setFieldsValue({ access: result.data.role_access });
+            if (result.data.all_access.length) {
               setsubmit(false);
             }
-            return result.data.all_roles;
+            return result.data.all_access;
           }
           return [];
         }}

@@ -1,4 +1,4 @@
-import { AvatarDropdown, AvatarName, Footer, Question, SelectLang } from '@/components';
+import { AvatarDropdown, AvatarName } from '@/components';
 import { currentUser as queryCurrentUser } from '@/services/Login/api';
 import { LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
@@ -7,6 +7,8 @@ import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
+import React from 'react';
+import './store';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 

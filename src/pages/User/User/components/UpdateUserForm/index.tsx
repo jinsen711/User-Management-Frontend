@@ -1,7 +1,6 @@
-import { PlusOutlined } from '@ant-design/icons';
 import { memo } from 'react';
 import { ActionType, DrawerForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
-import { Button, Form } from 'antd';
+import { Form } from 'antd';
 
 import { handleUserUpdateBasic } from '../../services/api';
 
@@ -9,10 +8,15 @@ interface IProps {
   actionRef?: ActionType;
   visible: boolean;
   setVisible: (e: boolean) => void;
-  userItem?: User.UserItem;
+  userUpdateBasicInfo: User.UserUpdateBasic;
 }
 
-const UpdateUserForm: React.FC<IProps> = ({ actionRef, visible, setVisible, userItem }: IProps) => {
+const UpdateUserForm: React.FC<IProps> = ({
+  actionRef,
+  visible,
+  setVisible,
+  userUpdateBasicInfo,
+}: IProps) => {
   const [form] = Form.useForm<User.UserUpdateBasic>();
 
   return (
@@ -26,7 +30,7 @@ const UpdateUserForm: React.FC<IProps> = ({ actionRef, visible, setVisible, user
         },
       }}
       form={form}
-      initialValues={userItem}
+      initialValues={userUpdateBasicInfo}
       onFinish={async (values: User.UserUpdateBasic) => {
         const success = await handleUserUpdateBasic(values);
         if (success) {

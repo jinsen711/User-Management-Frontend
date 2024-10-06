@@ -89,9 +89,18 @@ export async function userDelete(params: User.UserDelete, options?: { [key: stri
 
 /** 获取指定用户角色信息 GET /api/v1/admin/user/role */
 export async function getUserRoles(params: User.GetUserRoles, options?: { [key: string]: any }) {
-  return request<User.ResUserRoles>('/api/v1/admin/user/role', {
+  return request<User.ResUserRoles>('/api/v1/admin/role/info', {
     method: 'GET',
     params: params,
+    ...(options || {}),
+  });
+}
+
+/** 设置指定用户角色 PUT /api/v1/admin/user/set_role */
+export async function setUserRoles(body: User.SetUserRoles, options?: { [key: string]: any }) {
+  return request<Base.ResBase>('/api/v1/admin/user/set_role', {
+    method: 'PUT',
+    data: body,
     ...(options || {}),
   });
 }
