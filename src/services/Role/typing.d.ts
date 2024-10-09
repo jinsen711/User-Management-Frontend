@@ -21,6 +21,10 @@ declare namespace Role {
     role_name: string;
   };
 
+  type GetUserRole = {
+    id: number;
+  };
+
   type SetRoleAccess = {
     id: number;
     access_id: number[];
@@ -58,21 +62,21 @@ declare namespace Role {
     roles_id: number[];
   };
 
-  export interface RoleListQuery extends Base.TableQuery {
+  export interface RoleListQuery extends Base.BaseQuery {
     role_name?: string;
     role_status?: boolean;
     create_time?: string;
   }
 
-  export interface ResRoleList extends Base.ResTableQueryBase {
+  export interface ResRoleList extends Base.BaseQueryRes {
     data: RoleItem[];
   }
 
-  export interface ResUserRoles extends Base.ResBase {
+  export interface ResUserRoles extends Base.BaseRes {
     data: UserRoles;
   }
 
-  export interface ResGetRoleAccess extends Base.ResBase {
+  export interface ResGetRoleAccess extends Base.BaseRes {
     data: {
       all_access: [{ label: string; value: number }];
       role_access: number[];

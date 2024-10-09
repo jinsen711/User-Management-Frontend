@@ -1,5 +1,5 @@
 import { AvatarDropdown, AvatarName } from '@/components';
-import { currentUser as queryCurrentUser } from '@/services/Login/api';
+import { getCurrentUserInfo as queryCurrentUser } from '@/services/User/api';
 import { LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
@@ -7,7 +7,6 @@ import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
-import React from 'react';
 import './store';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -17,9 +16,9 @@ const loginPath = '/user/login';
  * */
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
-  currentUser?: User.UserInfo;
+  getCurrentUserInfo?: User._UserInfoRes;
   loading?: boolean;
-  fetchUserInfo?: () => Promise<User.UserInfo | undefined>;
+  fetchUserInfo?: () => Promise<User._UserInfoRes | undefined>;
 }> {
   const fetchUserInfo = async () => {
     try {
@@ -33,10 +32,10 @@ export async function getInitialState(): Promise<{
   // 如果不是登录页面，执行
   const { location } = history;
   if (location.pathname !== loginPath) {
-    const currentUser = await fetchUserInfo();
+    const getCurrentUserInfo = await fetchUserInfo();
     return {
       fetchUserInfo,
-      currentUser,
+      getCurrentUserInfo,
       settings: defaultSettings as Partial<LayoutSettings>,
     };
   }
@@ -61,7 +60,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     },
     // 水印
     waterMarkProps: {
-      content: initialState?.currentUser?.username,
+      content: initialState?.getCurrentUserInfo?.username,
     },
     // 删除默认的 logo
     // footerRender: () => <Footer />,
@@ -69,7 +68,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
+      if (!initialState?.getCurrentUserInfo && location.pathname !== loginPath) {
         history.push(loginPath);
       }
     },

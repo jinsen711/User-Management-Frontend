@@ -1,6 +1,6 @@
-import { memo } from 'react';
 import { ActionType, DrawerForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 import { Form } from 'antd';
+import { memo } from 'react';
 
 import { handleUserUpdateBasic } from '../../services/api';
 
@@ -8,7 +8,7 @@ interface IProps {
   actionRef?: ActionType;
   visible: boolean;
   setVisible: (e: boolean) => void;
-  userUpdateBasicInfo: User.UserUpdateBasic;
+  userUpdateBasicInfo: User.UserBasicUpdate;
 }
 
 const UpdateUserForm: React.FC<IProps> = ({
@@ -17,10 +17,10 @@ const UpdateUserForm: React.FC<IProps> = ({
   setVisible,
   userUpdateBasicInfo,
 }: IProps) => {
-  const [form] = Form.useForm<User.UserUpdateBasic>();
+  const [form] = Form.useForm<User.UserBasicUpdate>();
 
   return (
-    <DrawerForm<User.UserUpdateBasic>
+    <DrawerForm<User.UserBasicUpdate>
       title={'编辑用户'}
       open={visible}
       width="400px"
@@ -31,7 +31,7 @@ const UpdateUserForm: React.FC<IProps> = ({
       }}
       form={form}
       initialValues={userUpdateBasicInfo}
-      onFinish={async (values: User.UserUpdateBasic) => {
+      onFinish={async (values: User.UserBasicUpdate) => {
         const success = await handleUserUpdateBasic(values);
         if (success) {
           // 关闭弹窗

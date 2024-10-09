@@ -1,12 +1,13 @@
 import {
-  userCreate,
-  userList,
-  userUpdateBasic,
-  userDelete,
-  userUpdateStatus,
-  getUserRoles,
   setUserRoles,
-} from '@/services/Login/api';
+  userBasicUpdate,
+  userCreate,
+  userDelete,
+  userQuery,
+  userStatusUpdate,
+} from '@/services/User/api';
+
+import { getUserRole } from '@/services/Role/api';
 
 import { message } from 'antd';
 
@@ -38,18 +39,16 @@ export const handleUserCreate = async (createInfo: User.UserCreate): Promise<boo
  * @param {User.GetUserListQuery} listQuery
  * @return {*} Promise<User.ResGetUserList>
  */
-export const handleUserList = async (
-  listQuery: User.GetUserListQuery,
-): Promise<User.ResGetUserList> => {
+export const handleUserList = async (listQuery: User.UserQuery): Promise<User.UserQueryRes> => {
   const hide = message.loading('正在获取用户列表');
   try {
-    const result = await userList(listQuery);
+    const result = await userQuery(listQuery);
     hide();
     return result;
   } catch (error: any) {
     hide();
     message.error(error.message);
-    return {} as User.ResGetUserList;
+    return {} as User.UserQueryRes;
   }
 };
 
@@ -57,13 +56,13 @@ export /**
  * @description 更新用户基础信息
  * @author jin
  * @date 05/10/2024
- * @param {User.UserUpdateBasic} basicInfo
+ * @param {User.UserBasicUpdate} basicInfo
  * @return {*}  {Promise<boolean>}
  */
-const handleUserUpdateBasic = async (basicInfo: User.UserUpdateBasic): Promise<boolean> => {
+const handleUserUpdateBasic = async (basicInfo: User.UserBasicUpdate): Promise<boolean> => {
   const hide = message.loading('正在更新用户基础信息');
   try {
-    await userUpdateBasic(basicInfo);
+    await userBasicUpdate(basicInfo);
     hide();
     message.success('更新成功');
     return true;
@@ -78,14 +77,14 @@ export /**
  * @description 更新用户状态
  * @author jin
  * @date 05/10/2024
- * @param {User.UserUpdateStatus} statusInfo
+ * @param {User.UserStatusUpdate} statusInfo
  * @return {*}  {Promise<boolean>}
  */
-const handleUserUpdateStatus = async (statusInfo: User.UserUpdateStatus): Promise<boolean> => {
+const handleUserUpdateStatus = async (statusInfo: User.UserStatusUpdate): Promise<boolean> => {
   // 修改用户状态
   const hide = message.loading('正在更新用户状态');
   try {
-    await userUpdateStatus(statusInfo);
+    await userStatusUpdate(statusInfo);
     hide();
     message.success('更新成功');
     return true;
@@ -124,10 +123,10 @@ export /**
  * @param {User.GetUserRoles} id
  * @return {*}  {Promise<User.ResUserRoles>}
  */
-const handleGetUserRoles = async (userInfo: User.GetUserRoles): Promise<User.ResUserRoles> => {
+const handleGetUserRoles = async (userInfo: Role.GetUserRoles): Promise<User.ResUserRoles> => {
   const hide = message.loading('正在获取用户角色');
   try {
-    const result = await getUserRoles(userInfo);
+    const result = await getUserRole(userInfo);
     hide();
     return result;
   } catch (error: any) {

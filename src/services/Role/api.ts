@@ -11,7 +11,7 @@ export async function roleList(params: Role.RoleListQuery, options?: { [key: str
 
 /** 创建角色 POST /api/v1/admin/role */
 export async function createRole(data: Role.RoleCreate, options?: { [key: string]: any }) {
-  return request<Base.ResBase>('/api/v1/admin/role', {
+  return request<Base.BaseRes>('/api/v1/admin/role', {
     method: 'POST',
     data: data,
     ...(options || {}),
@@ -23,7 +23,7 @@ export async function updateRoleBasic(
   data: Role.RoleUpdateBasic,
   options?: { [key: string]: any },
 ) {
-  return request<Base.ResBase>(`/api/v1/admin/role/basic`, {
+  return request<Base.BaseRes>(`/api/v1/admin/role/basic`, {
     method: 'PUT',
     data: data,
     ...(options || {}),
@@ -35,7 +35,7 @@ export async function updateRoleStatus(
   data: Role.RoleUpdateStatus,
   options?: { [key: string]: any },
 ) {
-  return request<Base.ResBase>(`/api/v1/admin/role/status`, {
+  return request<Base.BaseRes>(`/api/v1/admin/role/status`, {
     method: 'PUT',
     data: data,
     ...(options || {}),
@@ -44,7 +44,7 @@ export async function updateRoleStatus(
 
 /** 删除角色 DELETE /api/v1/admin/role */
 export async function deleteRole(params: Role.RoleDelete, options?: { [key: string]: any }) {
-  return request<Base.ResBase>(`/api/v1/admin/role`, {
+  return request<Base.BaseRes>(`/api/v1/admin/role`, {
     method: 'DELETE',
     params: params,
     ...(options || {}),
@@ -62,9 +62,17 @@ export async function getRoleAccess(params: Role.GetRoleAccess, options?: { [key
 
 /** 设置角色权限 PUT /api/v1/admin/role/set_access */
 export async function setRoleAccess(data: Role.SetRoleAccess, options?: { [key: string]: any }) {
-  return request<Base.ResBase>(`/api/v1/admin/role/set_access`, {
+  return request<Base.BaseRes>(`/api/v1/admin/role/set_access`, {
     method: 'PUT',
     data: data,
     ...(options || {}),
+  });
+}
+
+/** 获取指定用户角色信息 GET /api/v1/admin/role/info */
+export async function getUserRole(params: Role.GetUserRole) {
+  return request<User.ResUserRoles>('/api/v1/admin/role/info', {
+    method: 'GET',
+    params: params,
   });
 }

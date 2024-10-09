@@ -13,11 +13,11 @@
     }
   ],
   "paths": {
-    "/api/currentUser": {
+    "/api/getCurrentUserInfo": {
       "get": {
         "tags": ["api"],
         "description": "获取当前的用户",
-        "operationId": "currentUser",
+        "operationId": "getCurrentUserInfo",
         "responses": {
           "200": {
             "description": "Success",

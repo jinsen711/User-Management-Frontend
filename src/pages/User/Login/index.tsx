@@ -1,5 +1,5 @@
 import { Footer } from '@/components';
-import { login } from '@/services/Login/api';
+import { login } from '@/services/User/api';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
 import { FormattedMessage, Helmet, history, SelectLang, useIntl, useModel } from '@umijs/max';
@@ -88,7 +88,7 @@ const Login: React.FC = () => {
       flushSync(() => {
         setInitialState((s) => ({
           ...s,
-          currentUser: userInfo,
+          getCurrentUserInfo: userInfo,
         }));
       });
     }

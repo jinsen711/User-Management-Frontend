@@ -1,14 +1,14 @@
-import React, { useRef, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { Button, Avatar, Popconfirm } from 'antd';
+import { Avatar, Button, Popconfirm } from 'antd';
 import moment from 'moment';
+import React, { useRef, useState } from 'react';
 
 import CreateUserForm from './components/CreateUserForm';
-import UpdateUserForm from './components/UpdateUserForm';
 import SetRole from './components/SetRole';
-import { handleUserList, handleUserDelete, handleUserUpdateStatus } from './services/api';
+import UpdateUserForm from './components/UpdateUserForm';
+import { handleUserDelete, handleUserList, handleUserUpdateStatus } from './services/api';
 
 const TableList: React.FC = () => {
   // 添加用户弹窗
@@ -18,7 +18,7 @@ const TableList: React.FC = () => {
   // 角色管理弹窗
   const [roleOpen, setRoleOpen] = useState<boolean>(false);
   // 更新用户基础信息
-  const [userUpdateBasicInfo, setUserBasicInfo] = useState<User.UserUpdateBasic>({ id: 0 });
+  const [userUpdateBasicInfo, setUserBasicInfo] = useState<User.UserBasicUpdate>({ id: 0 });
   // 设置角色信息
   const [getUserRolesInfo, setGetUserRolesInfo] = useState<User.GetUserRoles>({ id: 0 });
 

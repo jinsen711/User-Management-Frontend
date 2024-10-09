@@ -1,14 +1,14 @@
 declare namespace Base {
-  type ResBase = {
-    code?: number;
-    message?: string;
-    data?: any;
+  type BaseRes = {
+    code: number;
+    message: string;
+    data: any;
   };
-  type TableQuery = {
-    paseSize?: number;
-    current?: number;
+  type BaseQuery = {
+    paseSize: number;
+    current: number;
   };
-  type ResTableQueryBase = {
+  type BaseQueryRes = {
     code: number;
     total: number;
     data: any[];

@@ -1,9 +1,11 @@
 /**
  * @see https://umijs.org/docs/max/access#access
  * */
-export default function access(initialState: { currentUser?: User.UserInfo } | undefined) {
-  const { currentUser } = initialState ?? {};
+export default function access(
+  initialState: { getCurrentUserInfo?: User._UserInfoRes } | undefined,
+) {
+  const { getCurrentUserInfo } = initialState ?? {};
   return {
-    canAdmin: currentUser && currentUser.user_type === true,
+    canAdmin: getCurrentUserInfo && getCurrentUserInfo.user_type === true,
   };
 }
