@@ -1,13 +1,12 @@
-import { memo, useState, useRef } from 'react';
-import { ActionType } from '@ant-design/pro-components';
-import { ModalForm, ProFormCheckbox, FormInstance } from '@ant-design/pro-components';
+import { FormInstance, ModalForm, ProFormCheckbox } from '@ant-design/pro-components';
+import { memo, useRef, useState } from 'react';
 
-import { handleGetRoleAccess, handleSetRoleAccess } from '../../services/api';
+import { handleGetRoleAccessInfo, handleSetRoleAccess } from '../../services/api';
 
 interface IProps {
   visible: boolean;
   setVisible: (e: boolean) => void;
-  getRoleAccessInfo: Role.GetRoleAccess;
+  getRoleAccessInfo: Access.GetRoleAccess;
 }
 
 const SetRole: React.FC<IProps> = ({ visible, setVisible, getRoleAccessInfo }) => {
@@ -45,7 +44,7 @@ const SetRole: React.FC<IProps> = ({ visible, setVisible, getRoleAccessInfo }) =
         name={'access'}
         layout={'vertical'}
         request={async () => {
-          const result = await handleGetRoleAccess(getRoleAccessInfo);
+          const result = await handleGetRoleAccessInfo(getRoleAccessInfo);
           console.log(result);
           // 判断 result 是否存在
           if (Object.keys(result).length) {

@@ -5,10 +5,10 @@ import { Avatar, Button, Popconfirm } from 'antd';
 import moment from 'moment';
 import React, { useRef, useState } from 'react';
 
-import CreateUserForm from './components/CreateUserForm';
 import SetRole from './components/SetRole';
-import UpdateUserForm from './components/UpdateUserForm';
-import { handleUserDelete, handleUserList, handleUserUpdateStatus } from './services/api';
+import UserBasicUpdateForm from './components/UserBasicUpdateForm';
+import UserCreateForm from './components/UserCreateForm';
+import { handleUserDelete, handleUserQuery, handleUserStatusUpdate } from './services/api';
 
 const TableList: React.FC = () => {
   // 添加用户弹窗
@@ -20,12 +20,12 @@ const TableList: React.FC = () => {
   // 更新用户基础信息
   const [userUpdateBasicInfo, setUserBasicInfo] = useState<User.UserBasicUpdate>({ id: 0 });
   // 设置角色信息
-  const [getUserRolesInfo, setGetUserRolesInfo] = useState<User.GetUserRoles>({ id: 0 });
+  const [getUserRolesInfo, setGetUserRolesInfo] = useState<Role.GetUserRole>({ id: 0 });
 
   const actionRef = useRef<ActionType>();
 
   // 表格列
-  const columns: ProColumns<User.UserItem>[] = [
+  const columns: ProColumns<User.UserInfo>[] = [
     {
       title: '头像',
       dataIndex: 'header_img',
@@ -96,15 +96,15 @@ const TableList: React.FC = () => {
       dataIndex: 'user_status',
       width: 100,
       valueEnum: {
-        0: { text: '已禁用', status: 'Error' },
-        1: { text: '已启用', status: 'Success' },
+        false: { text: '已禁用', status: 'Error' },
+        true: { text: '已启用', status: 'Success' },
       },
     },
     {
       title: '操作',
       valueType: 'option',
       width: 200,
-      render: (dom, userItem: User.UserItem) => {
+      render: (dom, userItem: User.UserInfo) => {
         return [
           <Button
             key={'disable'}
@@ -112,7 +112,7 @@ const TableList: React.FC = () => {
             danger={userItem.user_status}
             onClick={async () => {
               // 更新状态
-              await handleUserUpdateStatus({ ...userItem, user_status: !userItem.user_status });
+              await handleUserStatusUpdate({ ...userItem, user_status: !userItem.user_status });
               // 刷新列表
               if (actionRef.current) {
                 actionRef.current.reload();
@@ -193,7 +193,7 @@ const TableList: React.FC = () => {
             创建用户
           </Button>,
         ]}
-        request={async (params) => handleUserList({ ...params })} // 获取数据
+        request={async (params: User.UserQuery) => handleUserQuery({ ...params })}
         columns={columns} // 表格列配置
         pagination={{
           defaultPageSize: 10, // 默认每页条数
@@ -203,13 +203,13 @@ const TableList: React.FC = () => {
       />
 
       {/* 创建新用户弹窗 */}
-      <CreateUserForm
+      <UserCreateForm
         actionRef={actionRef.current}
         visible={userCreateOpen}
         setVisible={setUserCreateOpen}
       />
       {/* 更新用户弹窗 */}
-      <UpdateUserForm
+      <UserBasicUpdateForm
         actionRef={actionRef.current}
         visible={userUpdateOpen}
         setVisible={setUserUpdateOpen}

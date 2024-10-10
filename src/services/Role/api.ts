@@ -1,77 +1,56 @@
 import { request } from '@umijs/max';
 
-/** 获取角色列表 GET /api/v1/admin/role */
-export async function roleList(params: Role.RoleListQuery, options?: { [key: string]: any }) {
-  return request<Role.ResRoleList>('/api/v1/admin/role', {
+/** 角色查询 GET /api/v1/admin/role */
+export async function roleQuery(params: Role.RoleQuery) {
+  return request<Role.RoleQueryRes>('/api/v1/admin/role', {
     method: 'GET',
     params: params,
-    ...(options || {}),
   });
 }
 
-/** 创建角色 POST /api/v1/admin/role */
-export async function createRole(data: Role.RoleCreate, options?: { [key: string]: any }) {
+/** 角色创建 POST /api/v1/admin/role */
+export async function roleCreate(data: Role.RoleCreate) {
   return request<Base.BaseRes>('/api/v1/admin/role', {
     method: 'POST',
     data: data,
-    ...(options || {}),
   });
 }
 
-/** 更新角色基础信息 PUT /api/v1/admin/role/basic */
-export async function updateRoleBasic(
-  data: Role.RoleUpdateBasic,
-  options?: { [key: string]: any },
-) {
+/** 角色基础信息更新 PUT /api/v1/admin/role/basic */
+export async function roleBasicUpdate(data: Role.RoleBasicUpdate) {
   return request<Base.BaseRes>(`/api/v1/admin/role/basic`, {
     method: 'PUT',
     data: data,
-    ...(options || {}),
   });
 }
 
-/** 更新角色状态 PUT /api/v1/admin/role/status */
-export async function updateRoleStatus(
-  data: Role.RoleUpdateStatus,
-  options?: { [key: string]: any },
-) {
+/** 角色状态更新 PUT /api/v1/admin/role/status */
+export async function roleStatusUpdate(data: Role.RoleStatusUpdate) {
   return request<Base.BaseRes>(`/api/v1/admin/role/status`, {
     method: 'PUT',
     data: data,
-    ...(options || {}),
   });
 }
 
-/** 删除角色 DELETE /api/v1/admin/role */
-export async function deleteRole(params: Role.RoleDelete, options?: { [key: string]: any }) {
+/** 角色删除 DELETE /api/v1/admin/role */
+export async function roleDelete(params: Role.RoleDelete) {
   return request<Base.BaseRes>(`/api/v1/admin/role`, {
     method: 'DELETE',
     params: params,
-    ...(options || {}),
-  });
-}
-
-/** 获取角色权限 GET /api/v1/admin/access/info */
-export async function getRoleAccess(params: Role.GetRoleAccess, options?: { [key: string]: any }) {
-  return request<Role.ResGetRoleAccess>('/api/v1/admin/access/info', {
-    method: 'GET',
-    params: params,
-    ...(options || {}),
   });
 }
 
 /** 设置角色权限 PUT /api/v1/admin/role/set_access */
-export async function setRoleAccess(data: Role.SetRoleAccess, options?: { [key: string]: any }) {
+export async function setRoleAccess(data: Role.SetRoleAccess) {
   return request<Base.BaseRes>(`/api/v1/admin/role/set_access`, {
     method: 'PUT',
     data: data,
-    ...(options || {}),
   });
 }
 
-/** 获取指定用户角色信息 GET /api/v1/admin/role/info */
+/** 获取指定 用户 角色信息 GET /api/v1/admin/role/info */
 export async function getUserRole(params: Role.GetUserRole) {
-  return request<User.ResUserRoles>('/api/v1/admin/role/info', {
+  return request<Role.GetUserRoleRes>('/api/v1/admin/role/info', {
     method: 'GET',
     params: params,
   });

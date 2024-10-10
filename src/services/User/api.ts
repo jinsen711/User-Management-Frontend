@@ -9,8 +9,8 @@ export async function login(body: User.UserLogin) {
 }
 
 /** 获取当前的用户信息 GET /api/v1/admin/user/cur_user_info */
-export async function getCurrentUserInfo() {
-  return request<User.GetCurrentUserInfoRes>('/api/v1/admin/user/cur_user_info', {
+export async function currentUserInfo() {
+  return request<User.CurrentUserInfoRes>('/api/v1/admin/user/cur_user_info', {
     method: 'GET',
   });
 }
@@ -64,7 +64,7 @@ export async function userDelete(params: User.UserDelete) {
 }
 
 /** 设置用户角色 PUT /api/v1/admin/user/set_role */
-export async function setUserRoles(body: User.SetUserRoles) {
+export async function setUserRoles(body: User.SetUserRole) {
   return request<Base.BaseRes>('/api/v1/admin/user/set_role', {
     method: 'PUT',
     data: body,

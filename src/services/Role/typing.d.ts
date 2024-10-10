@@ -1,24 +1,19 @@
 declare namespace Role {
   type RoleCreate = {
     role_name: string;
+    role_status?: boolean;
+    role_desc?: string;
+  };
+
+  type RoleBasicUpdate = {
+    id: number;
+    role_name?: string;
+    role_desc?: string;
+  };
+
+  type RoleStatusUpdate = {
+    id: number;
     role_status: boolean;
-    role_desc: string;
-  };
-
-  type RoleUpdateBasic = {
-    id: number;
-    role_name: string;
-    role_desc: string;
-  };
-
-  type RoleUpdateStatus = {
-    id: number;
-    role_status: boolean;
-  };
-
-  type RoleAccess = {
-    id: number;
-    role_name: string;
   };
 
   type GetUserRole = {
@@ -27,18 +22,14 @@ declare namespace Role {
 
   type SetRoleAccess = {
     id: number;
-    access_id: number[];
-  };
-
-  type GetRoleAccess = {
-    id: number;
+    access_id?: number[];
   };
 
   type RoleDelete = {
     id: number;
   };
 
-  type RoleItem = {
+  type RoleInfo = {
     key: number;
     id: number;
     role_name: string;
@@ -48,38 +39,29 @@ declare namespace Role {
     update_time: string;
   };
 
-  type GetUserRoles = {
+  type GetUserRole = {
     id: number;
   };
 
-  type UserRoles = {
-    all_roles: [{ label: string; value: number }];
-    user_roles: number[];
-  };
-
-  type SetUserRoles = {
+  type SetUserRole = {
     id: number;
     roles_id: number[];
   };
 
-  export interface RoleListQuery extends Base.BaseQuery {
+  export interface RoleQuery extends Base.BaseQuery {
     role_name?: string;
     role_status?: boolean;
     create_time?: string;
   }
 
-  export interface ResRoleList extends Base.BaseQueryRes {
-    data: RoleItem[];
+  export interface RoleQueryRes extends Base.BaseQueryRes {
+    data: RoleInfo[];
   }
 
-  export interface ResUserRoles extends Base.BaseRes {
-    data: UserRoles;
-  }
-
-  export interface ResGetRoleAccess extends Base.BaseRes {
+  export interface GetUserRoleRes extends Base.BaseRes {
     data: {
-      all_access: [{ label: string; value: number }];
-      role_access: number[];
+      all_roles: [{ label: string; value: number }];
+      user_roles: number[];
     };
   }
 }

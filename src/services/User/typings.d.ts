@@ -49,10 +49,10 @@ declare namespace User {
   };
 
   export interface LoginRes extends Base.ResBase {
-    date: _TokenRes;
+    data: _TokenRes;
   }
 
-  type _UserInfoRes = {
+  type UserInfo = {
     id: number;
     key: number;
     username: string;
@@ -70,8 +70,8 @@ declare namespace User {
     update_time: string;
   };
 
-  export interface GetCurrentUserInfoRes extends Base.ResBase {
-    data: _UserInfoRes;
+  export interface CurrentUserInfoRes extends Base.ResBase {
+    data: UserInfo;
   }
 
   export interface UserQuery extends Base.BaseQuery {
@@ -86,20 +86,11 @@ declare namespace User {
   }
 
   export interface UserQueryRes extends Base.ResTableQueryBase {
-    data: _UserInfoRes[];
+    data: UserInfo[];
   }
 
-  type UserRoles = {
-    all_roles: [{ label: string; value: number }];
-    user_roles: number[];
-  };
-
-  type SetUserRoles = {
+  type SetUserRole = {
     id: number;
     roles_id?: number[];
   };
-
-  export interface ResUserRoles extends Base.ResBase {
-    data: UserRoles;
-  }
 }

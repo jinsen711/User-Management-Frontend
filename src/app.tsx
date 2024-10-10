@@ -1,5 +1,5 @@
 import { AvatarDropdown, AvatarName } from '@/components';
-import { getCurrentUserInfo as queryCurrentUser } from '@/services/User/api';
+import { currentUserInfo as queryCurrentUser } from '@/services/User/api';
 import { LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
@@ -16,9 +16,9 @@ const loginPath = '/user/login';
  * */
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
-  getCurrentUserInfo?: User._UserInfoRes;
+  currentUserInfo?: User.UserInfo;
   loading?: boolean;
-  fetchUserInfo?: () => Promise<User._UserInfoRes | undefined>;
+  fetchUserInfo?: () => Promise<User.UserInfo | undefined>;
 }> {
   const fetchUserInfo = async () => {
     try {
@@ -32,10 +32,10 @@ export async function getInitialState(): Promise<{
   // 如果不是登录页面，执行
   const { location } = history;
   if (location.pathname !== loginPath) {
-    const getCurrentUserInfo = await fetchUserInfo();
+    const currentUserInfo = await fetchUserInfo();
     return {
       fetchUserInfo,
-      getCurrentUserInfo,
+      currentUserInfo,
       settings: defaultSettings as Partial<LayoutSettings>,
     };
   }
@@ -60,7 +60,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     },
     // 水印
     waterMarkProps: {
-      content: initialState?.getCurrentUserInfo?.username,
+      content: initialState?.currentUserInfo?.username,
     },
     // 删除默认的 logo
     // footerRender: () => <Footer />,
@@ -68,7 +68,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!initialState?.getCurrentUserInfo && location.pathname !== loginPath) {
+      if (!initialState?.currentUserInfo && location.pathname !== loginPath) {
         history.push(loginPath);
       }
     },

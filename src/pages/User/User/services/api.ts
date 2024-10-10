@@ -15,15 +15,14 @@ import { message } from 'antd';
  * @description 创建用户
  * @author jin
  * @date 05/10/2024
- * @param {User.UserCreate} createInfo
+ * @param {User.UserCreate} body
  * @return {*} Promise<boolean>
  */
-export const handleUserCreate = async (createInfo: User.UserCreate): Promise<boolean> => {
+export const handleUserCreate = async (body: User.UserCreate): Promise<boolean> => {
   const hide = message.loading('正在创建');
   try {
-    await userCreate(createInfo);
+    await userCreate(body);
     hide();
-    message.success('创建成功');
     return true;
   } catch (error: any) {
     hide();
@@ -36,13 +35,13 @@ export const handleUserCreate = async (createInfo: User.UserCreate): Promise<boo
  * @description 获取用户列表
  * @author jin
  * @date 04/10/2024
- * @param {User.GetUserListQuery} listQuery
+ * @param {User.UserQuery} params
  * @return {*} Promise<User.ResGetUserList>
  */
-export const handleUserList = async (listQuery: User.UserQuery): Promise<User.UserQueryRes> => {
+export const handleUserQuery = async (params: User.UserQuery): Promise<User.UserQueryRes> => {
   const hide = message.loading('正在获取用户列表');
   try {
-    const result = await userQuery(listQuery);
+    const result = await userQuery(params);
     hide();
     return result;
   } catch (error: any) {
@@ -56,15 +55,14 @@ export /**
  * @description 更新用户基础信息
  * @author jin
  * @date 05/10/2024
- * @param {User.UserBasicUpdate} basicInfo
+ * @param {User.UserBasicUpdate} body
  * @return {*}  {Promise<boolean>}
  */
-const handleUserUpdateBasic = async (basicInfo: User.UserBasicUpdate): Promise<boolean> => {
+const handleUserBasicUpdate = async (body: User.UserBasicUpdate): Promise<boolean> => {
   const hide = message.loading('正在更新用户基础信息');
   try {
-    await userBasicUpdate(basicInfo);
+    await userBasicUpdate(body);
     hide();
-    message.success('更新成功');
     return true;
   } catch (error: any) {
     hide();
@@ -77,16 +75,15 @@ export /**
  * @description 更新用户状态
  * @author jin
  * @date 05/10/2024
- * @param {User.UserStatusUpdate} statusInfo
+ * @param {User.UserStatusUpdate} body
  * @return {*}  {Promise<boolean>}
  */
-const handleUserUpdateStatus = async (statusInfo: User.UserStatusUpdate): Promise<boolean> => {
+const handleUserStatusUpdate = async (body: User.UserStatusUpdate): Promise<boolean> => {
   // 修改用户状态
   const hide = message.loading('正在更新用户状态');
   try {
-    await userStatusUpdate(statusInfo);
+    await userStatusUpdate(body);
     hide();
-    message.success('更新成功');
     return true;
   } catch (error: any) {
     hide();
@@ -99,15 +96,14 @@ export /**
  * @description 删除用户
  * @author jin
  * @date 05/10/2024
- * @param {User.UserDelete} user
+ * @param {User.UserDelete} params
  * @return {*}  {Promise<boolean>}
  */
-const handleUserDelete = async (user: User.UserDelete): Promise<boolean> => {
+const handleUserDelete = async (params: User.UserDelete): Promise<boolean> => {
   const hide = message.loading('正在删除用户');
   try {
-    await userDelete(user);
+    await userDelete(params);
     hide();
-    message.success('删除成功');
     return true;
   } catch (error: any) {
     hide();
@@ -120,26 +116,33 @@ export /**
  * @description 获取用户角色
  * @author jin
  * @date 05/10/2024
- * @param {User.GetUserRoles} id
- * @return {*}  {Promise<User.ResUserRoles>}
+ * @param {User.GetUserRole} params
+ * @return {*}  {Promise<Role.GetUserRoleRes>}
  */
-const handleGetUserRoles = async (userInfo: Role.GetUserRoles): Promise<User.ResUserRoles> => {
+const handleGetUserRole = async (params: Role.GetUserRole): Promise<Role.GetUserRoleRes> => {
   const hide = message.loading('正在获取用户角色');
   try {
-    const result = await getUserRole(userInfo);
+    const result = await getUserRole(params);
     hide();
     return result;
   } catch (error: any) {
     hide();
     message.error(error.message);
-    return {} as User.ResUserRoles;
+    return {} as Role.GetUserRoleRes;
   }
 };
 
-export const handleSetUserRoles = async (rolesInfo: User.SetUserRoles): Promise<boolean> => {
+export /**
+ * @description 设置用户角色
+ * @author jin
+ * @date 10/10/2024
+ * @param {User.SetUserRole} body
+ * @return {*}  {Promise<boolean>}
+ */
+const handleSetUserRoles = async (body: User.SetUserRole): Promise<boolean> => {
   const hide = message.loading('正在设置用户角色');
   try {
-    await setUserRoles(rolesInfo);
+    await setUserRoles(body);
     hide();
     return true;
   } catch (error: any) {

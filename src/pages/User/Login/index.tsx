@@ -1,7 +1,6 @@
-import { Footer } from '@/components';
 import { login } from '@/services/User/api';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
+import { LoginForm, ProFormText } from '@ant-design/pro-components';
 import { FormattedMessage, Helmet, history, SelectLang, useIntl, useModel } from '@umijs/max';
 import { message } from 'antd';
 import { createStyles } from 'antd-style';
@@ -13,20 +12,20 @@ import Settings from '../../../../config/defaultSettings';
  * @description 用户登录
  * @author jin
  * @date 04/10/2024
- * @param {User.LoginInfo} loginInfo
- * @return {*}  {Promise<User.ResLogin>}
+ * @param {User.UserLogin} loginInfo
+ * @return {*}  {Promise<User.LoginRes>}
  */
-const handleUserLogin = async (loginInfo: User.LoginInfo): Promise<User.ResLogin> => {
+const handleUserLogin = async (body: User.UserLogin): Promise<User.LoginRes> => {
   const hide = message.loading('正在登录, 请稍后...');
   try {
-    const result = await login({ ...loginInfo });
+    const result = await login({ ...body });
     hide();
     message.success('登录成功');
     return result;
   } catch (error: any) {
     hide();
     message.error(error.message);
-    return { data: { token: undefined } };
+    return {} as User.LoginRes;
   }
 };
 
@@ -88,22 +87,22 @@ const Login: React.FC = () => {
       flushSync(() => {
         setInitialState((s) => ({
           ...s,
-          getCurrentUserInfo: userInfo,
+          currentUserInfo: userInfo,
         }));
       });
     }
   };
 
-  const handleSubmit = async (loginInfo: User.LoginInfo) => {
+  const handleSubmit = async (loginInfo: User.UserLogin) => {
     try {
       // 登录
       const result = await handleUserLogin(loginInfo);
-      if (result.data.token !== undefined) {
+      if (Object.keys(result).length !== 0) {
         // 存储 token
         localStorage.setItem('Authorization', result.data.token);
-        // 获取用户信息
+        // 获取用户信息并存储到 initialState
         await fetchUserInfo();
-        // 用户登录成功后的跳转页面, 用于重定义原来退出重新登录的页面
+        // 用户登录成功后的跳转页面, redirect 参数用于重定义原来退出重新登录的页面
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
       }
@@ -116,7 +115,6 @@ const Login: React.FC = () => {
       return;
     }
   };
-  // const { code } = userLoginState;
 
   return (
     <div className={styles.container}>
@@ -133,7 +131,7 @@ const Login: React.FC = () => {
       <div
         style={{
           flex: '1',
-          padding: '32px 0',
+          padding: '132px 0', // 32px 0
         }}
       >
         <LoginForm
@@ -141,14 +139,14 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          logo={<img alt="logo" src="/logo.svg" />}
-          title="Ant Design"
-          subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
+          logo={<img alt="logo" src="/favicon.ico" />}
+          title="用户管理系统"
+          subTitle="用户管理系统"
           initialValues={{
             autoLogin: true,
           }}
           onFinish={async (values) => {
-            await handleSubmit(values as API.LoginParams);
+            await handleSubmit(values as User.UserLogin);
           }}
         >
           {
@@ -199,24 +197,8 @@ const Login: React.FC = () => {
               />
             </>
           }
-
-          <div
-            style={{
-              marginBottom: 24,
-            }}
-          >
-            <ProFormCheckbox noStyle name="autoLogin">
-              <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录" />
-            </ProFormCheckbox>
-            <a
-              style={{
-                float: 'right',
-              }}
-            ></a>
-          </div>
         </LoginForm>
       </div>
-      <Footer />
     </div>
   );
 };

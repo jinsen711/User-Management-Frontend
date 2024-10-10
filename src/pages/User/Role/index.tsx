@@ -1,21 +1,21 @@
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumnType } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import moment from 'moment';
 import { Button, Popconfirm } from 'antd';
+import moment from 'moment';
 import React, { useRef, useState } from 'react';
 
-import { handleRoleList, handleDeleteRole, handleUpdateRoleStatus } from './services/api';
+import { handleRoleDelete, handleRoleQuery, handleRoleStatusUpdate } from './services/api';
 
-import CreateRoleForm from './components/CreateRoleForm';
-import UpdateRoleForm from './components/UpdateRoleForm';
+import RoleBasicUpdateForm from './components/RoleBasicUpdateForm';
+import RoleCreateForm from './components/RoleCreateForm';
 import SetAccess from './components/SetAccess';
 
 const TableList: React.FC = () => {
   // 角色基础信息弹窗
   const [updateBasicOpen, setUpdateBasicOpen] = useState<boolean>(false);
   // 角色基础信息
-  const [roleUpdateBasicInfo, setRoleBasicInfo] = useState<Role.RoleUpdateBasic>({
+  const [roleUpdateBasicInfo, setRoleBasicInfo] = useState<Role.RoleBasicUpdate>({
     id: 0,
     role_name: '',
     role_desc: '',
@@ -23,7 +23,7 @@ const TableList: React.FC = () => {
   // 角色权限弹窗
   const [setAccessOpen, setSetAccessOpen] = useState<boolean>(false);
   // 角色权限信息
-  const [roleUpdateAccessInfo, setRoleAccessInfo] = useState<Role.GetRoleAccess>({
+  const [roleUpdateAccessInfo, setRoleAccessInfo] = useState<Access.GetRoleAccess>({
     id: 0,
   });
 
@@ -32,7 +32,7 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
 
   // 定义表头
-  const columns: ProColumnType<Role.RoleItem>[] = [
+  const columns: ProColumnType<Role.RoleInfo>[] = [
     {
       title: '角色名称',
       dataIndex: 'role_name',
@@ -91,7 +91,7 @@ const TableList: React.FC = () => {
       title: '操作',
       valueType: 'option',
       width: 200,
-      render: (dom, roleItem: Role.RoleItem) => {
+      render: (dom, roleItem: Role.RoleInfo) => {
         return [
           <Button
             key={'disable'}
@@ -99,7 +99,7 @@ const TableList: React.FC = () => {
             danger={roleItem.role_status}
             onClick={async () => {
               // 更新状态
-              await handleUpdateRoleStatus({ id: roleItem.id, role_status: !roleItem.role_status });
+              await handleRoleStatusUpdate({ id: roleItem.id, role_status: !roleItem.role_status });
               // 刷新列表
               if (actionRef.current) {
                 actionRef.current.reload();
@@ -143,7 +143,7 @@ const TableList: React.FC = () => {
             title="删除不可逆，谨慎操作！"
             onConfirm={async () => {
               // 删除
-              await handleDeleteRole({ id: roleItem.id });
+              await handleRoleDelete({ id: roleItem.id });
               // 刷新列表
               if (actionRef.current) {
                 actionRef.current.reload();
@@ -181,19 +181,19 @@ const TableList: React.FC = () => {
             创建角色
           </Button>,
         ]}
-        request={async (params) => handleRoleList({ ...params })}
+        request={async (params: Role.RoleQuery) => handleRoleQuery({ ...params })}
         columns={columns}
       />
 
       {/* 创建角色弹窗 */}
-      <CreateRoleForm
+      <RoleCreateForm
         actionRef={actionRef.current}
         visible={createFormOpen}
         setVisible={setCreateFormOpen}
       />
 
       {/* 更新角色弹窗 */}
-      <UpdateRoleForm
+      <RoleBasicUpdateForm
         actionRef={actionRef.current}
         visible={updateBasicOpen}
         setVisible={setUpdateBasicOpen}
