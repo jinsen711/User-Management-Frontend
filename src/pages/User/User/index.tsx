@@ -31,9 +31,13 @@ const TableList: React.FC = () => {
       dataIndex: 'header_img',
       search: false,
       width: 60,
-      // render: (_, d) => <Avatar src={d.header_img} />,
-      render: () => (
-        <Avatar src="https://s1.imagehub.cc/images/2024/10/03/20005e6d544e9a0543edfe27a7e4e398.jpg"></Avatar>
+      render: (_, userInfo: User.UserInfo) => (
+        <Avatar
+          src={
+            userInfo.header_img ||
+            'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'
+          }
+        ></Avatar>
       ),
     },
     {
@@ -104,29 +108,29 @@ const TableList: React.FC = () => {
       title: '操作',
       valueType: 'option',
       width: 200,
-      render: (dom, userItem: User.UserInfo) => {
+      render: (_, userInfo: User.UserInfo) => {
         return [
           <Button
             key={'disable'}
-            type={userItem.user_status ? 'dashed' : 'primary'}
-            danger={userItem.user_status}
+            type={userInfo.user_status ? 'dashed' : 'primary'}
+            danger={userInfo.user_status}
             onClick={async () => {
               // 更新状态
-              await handleUserStatusUpdate({ ...userItem, user_status: !userItem.user_status });
+              await handleUserStatusUpdate({ ...userInfo, user_status: !userInfo.user_status });
               // 刷新列表
               if (actionRef.current) {
                 actionRef.current.reload();
               }
             }}
           >
-            {userItem.user_status ? '禁用' : '启用'}
+            {userInfo.user_status ? '禁用' : '启用'}
           </Button>,
 
           <Button
             key={'setrole'}
             type={'dashed'}
             onClick={() => {
-              setGetUserRolesInfo({ id: userItem.id });
+              setGetUserRolesInfo({ id: userInfo.id });
               // 打开角色管理弹窗
               setRoleOpen(true);
             }}
@@ -140,11 +144,11 @@ const TableList: React.FC = () => {
             type="primary"
             onClick={() => {
               setUserBasicInfo({
-                id: userItem.id,
-                username: userItem.username,
-                user_phone: userItem.user_phone,
-                user_email: userItem.user_email,
-                remarks: userItem.remarks,
+                id: userInfo.id,
+                username: userInfo.username,
+                user_phone: userInfo.user_phone,
+                user_email: userInfo.user_email,
+                remarks: userInfo.remarks,
               });
               // 打开更新用户弹窗
               setUserUpdateOpen(true);
@@ -156,7 +160,7 @@ const TableList: React.FC = () => {
             key={'delete'}
             title="删除不可逆，谨慎操作！"
             onConfirm={async () => {
-              await handleUserDelete({ ...userItem });
+              await handleUserDelete({ ...userInfo });
               // 刷新列表
               if (actionRef.current) {
                 actionRef.current.reload();

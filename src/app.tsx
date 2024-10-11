@@ -52,7 +52,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     // actionsRender: () => [<Question key="doc" />, <SelectLang key="SelectLang" />],
     // 头像
     avatarProps: {
-      src: 'https://s1.imagehub.cc/images/2024/10/03/2f80b06ca4a63f5ba37d8bd470368192.jpg',
+      src:
+        initialState?.currentUserInfo?.header_img ||
+        'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
       title: <AvatarName />,
       render: (_, avatarChildren) => {
         return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
@@ -62,8 +64,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     waterMarkProps: {
       content: initialState?.currentUserInfo?.username,
     },
-    // 删除默认的 logo
-    // footerRender: () => <Footer />,
 
     onPageChange: () => {
       const { location } = history;
