@@ -1,10 +1,10 @@
 import {
+  roleAccessUpdate,
   roleBasicUpdate,
   roleCreate,
   roleDelete,
   roleQuery,
   roleStatusUpdate,
-  setRoleAccess,
 } from '@/services/Role/api';
 
 import { getRoleAccess } from '@/services/Access/api';
@@ -138,13 +138,13 @@ export /**
  * @description 设置角色权限
  * @author jin
  * @date 06/10/2024
- * @param {Role.SetRoleAccess} body
+ * @param {Role.RoleAccessUpdate} body
  * @return {*}  {Promise<boolean>}
  */
-const handleSetRoleAccess = async (body: Role.SetRoleAccess): Promise<boolean> => {
+const handleSetRoleAccess = async (body: Role.RoleAccessUpdate): Promise<boolean> => {
   const hide = message.loading('正在设置角色权限...');
   try {
-    await setRoleAccess(body);
+    await roleAccessUpdate(body);
     hide();
     return true;
   } catch (error: any) {

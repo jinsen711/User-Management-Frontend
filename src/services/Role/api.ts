@@ -40,9 +40,9 @@ export async function roleDelete(params: Role.RoleDelete) {
   });
 }
 
-/** 设置角色权限 PUT /api/v1/admin/role/set_access */
-export async function setRoleAccess(data: Role.SetRoleAccess) {
-  return request<Base.BaseRes>(`/api/v1/admin/role/set_access`, {
+/** 角色权限更新 PUT /api/v1/admin/role/access */
+export async function roleAccessUpdate(data: Role.RoleAccessUpdate) {
+  return request<Base.BaseRes>(`/api/v1/admin/role/access`, {
     method: 'PUT',
     data: data,
   });

@@ -48,8 +48,6 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
-    // 头像左边的问号按钮
-    // actionsRender: () => [<Question key="doc" />, <SelectLang key="SelectLang" />],
     // 头像
     avatarProps: {
       src:

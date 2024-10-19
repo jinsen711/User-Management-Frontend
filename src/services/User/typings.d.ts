@@ -89,7 +89,7 @@ declare namespace User {
     data: UserInfo[];
   }
 
-  type SetUserRole = {
+  type UserRoleUpdate = {
     id: number;
     roles_id?: number[];
   };

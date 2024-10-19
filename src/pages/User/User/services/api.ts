@@ -1,9 +1,9 @@
 import {
-  setUserRoles,
   userBasicUpdate,
   userCreate,
   userDelete,
   userQuery,
+  userRoleUpdate,
   userStatusUpdate,
 } from '@/services/User/api';
 
@@ -136,13 +136,13 @@ export /**
  * @description 设置用户角色
  * @author jin
  * @date 10/10/2024
- * @param {User.SetUserRole} body
+ * @param {User.UserRoleUpdate} body
  * @return {*}  {Promise<boolean>}
  */
-const handleSetUserRoles = async (body: User.SetUserRole): Promise<boolean> => {
+const handleSetUserRoles = async (body: User.UserRoleUpdate): Promise<boolean> => {
   const hide = message.loading('正在设置用户角色');
   try {
-    await setUserRoles(body);
+    await userRoleUpdate(body);
     hide();
     return true;
   } catch (error: any) {

@@ -20,7 +20,7 @@ declare namespace Role {
     id: number;
   };
 
-  type SetRoleAccess = {
+  type RoleAccessUpdate = {
     id: number;
     access_id?: number[];
   };
@@ -43,7 +43,7 @@ declare namespace Role {
     id: number;
   };
 
-  type SetUserRole = {
+  type UserRoleUpdate = {
     id: number;
     roles_id: number[];
   };

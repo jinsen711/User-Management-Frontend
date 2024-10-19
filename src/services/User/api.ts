@@ -63,9 +63,9 @@ export async function userDelete(params: User.UserDelete) {
   });
 }
 
-/** 设置用户角色 PUT /api/v1/admin/user/set_role */
-export async function setUserRoles(body: User.SetUserRole) {
-  return request<Base.BaseRes>('/api/v1/admin/user/set_role', {
+/** 用户角色更新 PUT /api/v1/admin/user/role */
+export async function userRoleUpdate(body: User.UserRoleUpdate) {
+  return request<Base.BaseRes>('/api/v1/admin/user/role', {
     method: 'PUT',
     data: body,
   });

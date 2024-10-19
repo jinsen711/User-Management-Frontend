@@ -1,11 +1,11 @@
-import { memo } from 'react';
 import {
   ActionType,
   ModalForm,
-  ProFormText,
   ProFormSwitch,
+  ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-components';
+import { memo } from 'react';
 
 import { handleUserCreate } from '../../services/api';
 
@@ -88,6 +88,7 @@ const CreateUserForm: React.FC<IProps> = ({ actionRef, visible, setVisible }) =>
         rules={[{ pattern: /^1[3456789][0-9]{9}$/, message: '请输入手机号' }]}
       />
 
+      {/* TODO 在邮箱中输入后清除, 表达中会出现 user_email: "" 字样, 与后端不符, 会导致 pydantic 验证失败 */}
       <ProFormText
         name="user_email"
         placeholder="邮箱"
