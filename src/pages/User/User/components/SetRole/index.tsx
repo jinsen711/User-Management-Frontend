@@ -6,10 +6,10 @@ import { handleGetUserRole, handleSetUserRoles } from '../../services/api';
 interface IProps {
   visible: boolean;
   setVisible: (e: boolean) => void;
-  getUserRolesInfo: User.GetUserRole;
+  userRoleInfo: Role.GetUserRole;
 }
 
-const SetRole: React.FC<IProps> = ({ visible, setVisible, getUserRolesInfo }) => {
+const SetRole: React.FC<IProps> = ({ visible, setVisible, userRoleInfo }) => {
   const formRef = useRef<FormInstance>();
   const [submit, setsubmit] = useState(true);
 
@@ -25,7 +25,7 @@ const SetRole: React.FC<IProps> = ({ visible, setVisible, getUserRolesInfo }) =>
       formRef={formRef}
       onFinish={async (values) => {
         const success = await handleSetUserRoles({
-          ...getUserRolesInfo,
+          ...userRoleInfo,
           roles_id: values.roles,
         });
         if (success) {
@@ -43,7 +43,7 @@ const SetRole: React.FC<IProps> = ({ visible, setVisible, getUserRolesInfo }) =>
         name={'roles'}
         layout={'vertical'}
         request={async () => {
-          const result = await handleGetUserRole(getUserRolesInfo);
+          const result = await handleGetUserRole(userRoleInfo);
           // 判断 result 是否存在
           if (Object.keys(result).length) {
             formRef.current?.setFieldsValue({ roles: result.data.user_roles });
